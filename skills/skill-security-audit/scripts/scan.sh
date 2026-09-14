@@ -83,7 +83,7 @@ done < <(find "$DIR" -type f | sort)
 if [ "$BINARIES" -gt 0 ]; then
     report REJECT "unreadable binary file(s) in bundle — cannot be audited" \
         "(binary detection via grep -I)" \
-        "$BINARIES binary file(s) flagged BINARY in the inventory above"
+        "$BINARIES binary file(s) flagged BINARY in the inventory above. NOTE: this verdict is for SKILL/PLUGIN BUNDLES, where a binary has no legitimate reason to exist. If the artifact you are vetting IS a compiled application, installer, CLI or model file, this scanner cannot audit it and will always say REJECT — that is a false positive, not a finding. Run the provenance chain in references/compiled-artifacts.md instead."
 fi
 
 # ---------------------------------------------------------------------------

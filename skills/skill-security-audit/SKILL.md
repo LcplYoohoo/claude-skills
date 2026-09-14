@@ -51,6 +51,29 @@ Verified incidents and research (early 2026), each mapped to an audit layer:
   skills are flagged highest-risk. Claude Code skills get full network access,
   same as any program on the machine. → The default posture below.
 
+## Scope — what this workflow audits, and what it does not
+
+This workflow audits **skill and plugin bundles**: directories of text you can read
+end to end. Its whole method is reading every byte, so it only works on artifacts
+that can be read.
+
+**A compiled application, installer, CLI or model file cannot be read, and this
+workflow will return REJECT on it every single time** (auto-reject #5). That is a
+guaranteed false positive, not a finding — and a check that always fails teaches
+its operator to override it, which is the reflex an attacker wants. Route by
+artifact class before you start:
+
+| What you have | What to run |
+|---|---|
+| A skill / plugin / command / hook / MCP config bundle | This workflow. A binary inside such a bundle is a real finding — a skill has no legitimate reason to ship an `.exe` — so auto-reject #5 stands. |
+| A compiled application, installer, CLI, or model file you are deliberately installing | `references/compiled-artifacts.md` — the provenance chain. Reading is replaced by proving the bytes are the publisher's, then watching the first run. |
+| A skill that *wraps* a separately-installed tool | Both, as two artifacts: this workflow on the bundle, the provenance chain on the tool. |
+
+Getting this wrong in the safe direction still costs something. One 2026 audit of an
+offline speech toolkit hit `exit 2 — one REJECT group, "30 unreadable binary files"`
+and had to be accepted by hand "under the provenance posture, not the skill rule."
+The rule caught nothing; it just had to be argued past.
+
 ## Ground rules (before touching anything)
 
 1. **Audit a copy in the scratchpad directory, never a skill sitting in
@@ -179,9 +202,14 @@ This is where most real payloads live (SKILLJECT: 80.7% success hiding here).
 - **Account for every file** from the Step 0 inventory. Scripts, JSON, YAML,
   templates, "assets" — all of it. Check that extensions match contents (a
   `.json` containing shell syntax is a flag in itself).
-- **Unreadable = reject.** Any binary, compiled artifact (.exe, .dll, .pyc,
-  .wasm), or minified/obfuscated blob you cannot fully read cannot be audited,
-  so it fails. No exceptions.
+- **Unreadable = reject, *within a bundle*.** Any binary, compiled artifact
+  (.exe, .dll, .pyc, .wasm), or minified/obfuscated blob you cannot fully read
+  cannot be audited, so it fails. A skill bundle has no legitimate reason to ship
+  one — that is the whole point of the rule. If the artifact under review *is*
+  the compiled program (you meant to install a CLI or a desktop app), this rule
+  does not apply and never could: run `references/compiled-artifacts.md`
+  instead. Minified or obfuscated content inside a bundle is always a reject
+  regardless — that is hiding, not compiling.
 - **Fetch-and-execute = reject, always.** Any code that downloads and runs
   content at runtime — `curl | sh`, `iwr | iex`, dynamic `import()` from a
   URL, "update check" helpers — is the exact Cato/MedusaLocker pattern:
@@ -227,7 +255,9 @@ the bundle contains any script or any network use, test before trusting:
    rewrote and re-audited per Step 3)
 3. Runtime fetch-and-execute of remote code
 4. Obfuscated or encoded executable content
-5. Any unreadable binary file
+5. Any unreadable binary file **inside a bundle** (see Scope — a compiled
+   application you are deliberately installing is a different artifact class;
+   run `references/compiled-artifacts.md`)
 6. Credential-path access or a hardcoded exfil endpoint
 7. Secrecy or instruction-override language
 8. Reads/writes targeting persistent memory or config (`CLAUDE.md`,
@@ -295,5 +325,12 @@ Standing obligations after any install or sandbox run:
   severity, the incident behind each pattern, false-positive notes) plus
   manual-only checks grep can't catch. Read it when classifying scan hits or
   running checks by hand.
+- `references/compiled-artifacts.md` — the provenance chain for artifacts that
+  cannot be read: feasibility, canonical source and uploader identity, size and
+  hash against the publisher's own digest (including inside nested archives),
+  signer subject with a tampered-copy negative control, per-file malware scan,
+  real-process install, watched first run, staged-vs-installed manifest diff, and
+  the log row. Read it whenever the thing in front of you is a compiled
+  application, installer, CLI or model file rather than a bundle of text.
 - `scripts/scan.sh` — read-only grep scanner used in Step 2. Never executes or
   modifies anything; safe to run on hostile bundles.

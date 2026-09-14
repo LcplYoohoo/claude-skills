@@ -40,6 +40,34 @@ fetches, or writes anything, so it is safe to point at a hostile bundle.
 **A clean scan is not a clean bill.** It means the lazy 80% of attacks aren't present.
 The judgement layers still have to run.
 
+#### Scope, and the companion chain for things you can't read
+
+This workflow's method is reading every byte, so it only works on artifacts made of
+readable text. Point it at a **compiled** application, installer, CLI or model file and
+it returns REJECT every time, via auto-reject #5 ("any unreadable binary file").
+
+That rule is right for a bundle — a skill has no business shipping an `.exe` — and wrong
+for a program you meant to install. It matters because a check that always fails teaches
+its operator to override it, and an override reflex is precisely what an attacker needs.
+
+So the skill now routes by artifact class, and
+[`references/compiled-artifacts.md`](skills/skill-security-audit/references/compiled-artifacts.md)
+carries the other half: the **provenance chain** for artifacts that cannot be read.
+Reading is replaced by proving the bytes are the publisher's, then watching what they do:
+
+feasibility before downloading · canonical source and who uploaded the assets · size and
+hash against the publisher's own digest, including *inside* nested archives · signature by
+**signer subject**, not just "valid" · a tampered-copy negative control, because a
+verification step you have never seen fail is not a verification step · per-file malware
+scan, since folder-level scanning forces an all-or-nothing choice on a mixed bundle · a
+real-process install that survives storage virtualization · a watched first run measuring
+sockets, child processes and stray writes · a staged-vs-installed manifest diff · and a
+logged row, because an update is new bytes and a new verdict.
+
+It is equally explicit about what provenance does **not** buy you: it proves the bytes
+came from the publisher you named, never that what they shipped is safe. A malicious
+publisher passes every step.
+
 #### Why each layer exists
 
 The threat model is built from published work, not speculation:
