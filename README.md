@@ -1,10 +1,10 @@
 # claude-skills
 
-Claude Code skills I use on my own machine, cleaned up for other people.
+Claude Code skills I use on my own machine, cleaned up for other people. Seven so far.
 
 Each one lives in `skills/<name>/` and is a plain directory — a `SKILL.md` plus whatever
 references or scripts it needs. Nothing here installs anything, phones home, or runs at
-load time. Read them before you use them; that is the whole point of the first one.
+load time. Read them before you use them; that is the whole point of the first one. Sibling skills some of these mention by name (`verify-work`, `web-defender`, `ship-check`) are not published yet.
 
 ## Skills
 
@@ -90,6 +90,57 @@ The threat model is built from published work, not speculation:
 
 Install it the way it tells you to install anything else: read it first, then copy the
 files into `~/.claude/skills/skill-security-audit/`. Don't pipe it from a URL.
+
+### [\`reverse-engineer\`](skills/reverse-engineer/)
+
+Figure out how a piece of software works from what it ships — a web app, an Electron app
+(asar, bundles, source maps), an APK, a .NET or native exe, a SQLite file, a WASM module, EVM
+bytecode, a HAR capture — without running the target. Starts with a legal gate (do you own it or
+have written authorization, and does the licence allow it), works on copies only, and ties every
+finding to a byte range or a runtime observation, labelled **Observed / Inferred / Unknown**.
+Eight small Node scripts (identify, strings, asar, Electron fuses, SQLite, WASM, HAR, EVM), no
+dependencies, nothing executed, plus a 15-check \`scripts/selftest.js\`.
+
+### [\`adversarial-code-review\`](skills/adversarial-code-review/)
+
+Attack code you just wrote before you call it done. Seventeen fixed angles that find the class
+of defect a re-read cannot (because a re-read uses the mental model that produced the bug), a
+rationalizations table, and the discipline for handling a second reviewer's findings — classify
+before acting, three cycles then stop. Built from real shipped defects; each angle names the one
+that earned it. Ships \`scripts/codecheck.js\`, a zero-dependency static checker whose rules were
+each earned by a real bug, with its own regression fixtures.
+
+### [\`pine-v6-guidelines\`](skills/pine-v6-guidelines/)
+
+Pine Script v6 guardrails: the v5-vs-v6 differences a model trained mostly on v5 will get wrong,
+including four that change backtest numbers with **no compile error** (the margin default,
+short-circuit \`and\`/\`or\`, \`timeframe.period\`, \`strategy.exit\` pair evaluation). Plus the
+house patterns worth copying (non-repainting higher-timeframe reads, self-documenting inputs) and
+a before-you-call-it-done list.
+
+### [\`infographic\`](skills/infographic/)
+
+Explanatory figures — stat cards, step strips, comparison panels, proportion bars, tables, 2×2
+matrices, timelines — as self-contained SVG from a small JSON spec. One file, zero dependencies,
+prints light-on-white by default, WCAG-checked palettes (\`--contrast\` prints the table), and a
+\`source\` field the script nags you about because a figure with no provenance is a claim nobody
+can check. Not for nodes-and-edges; that is a diagram tool's job.
+
+### [\`deslopify-copy\`](skills/deslopify-copy/)
+
+Two passes over customer-facing copy: strip the known AI-writing tells, then replace every
+superlative with a verifiable specific. Pass 1's pattern list is re-authored from
+[blader/humanizer](https://github.com/blader/humanizer) (MIT), itself built on Wikipedia's
+"Signs of AI writing" guide; one rule is from
+[ItsssssJack/SlopMonster](https://github.com/ItsssssJack/SlopMonster) (MIT). Credit for the
+observations is theirs. Not for code comments or internal docs.
+
+### [\`decisions-ledger\`](skills/decisions-ledger/)
+
+One markdown file per real decision, with the prediction and a review date written down at the
+time (\`/decide\`), and a grading pass when the date comes (\`/decide-revisit\`): what we said
+would happen against what did. Pattern borrowed from seandavi/lifeos-template. The point is the
+scoreboard, not the narrative.
 
 ## Licence
 
