@@ -58,7 +58,7 @@ async function main(argv) {
     for (const h of hits) process.stdout.write(`        ${h}\n`);
     if (status === 200) {
       const local = fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
-      if (local !== body.replace(/\r\n/g, '\n')) process.stdout.write(`        note: live bytes differ from the staged copy (not pushed yet, or CDN cache)\n`);
+      if (local !== body.replace(/\r\n/g, '\n')) process.stdout.write(`        note: live bytes differ from the staged copy (not pushed yet, or the raw CDN still serves the previous commit - it lags a push by up to ~5 min; wait and re-run, do not re-push)\n`);
     }
   }
   process.stdout.write(bad ? `${bad} file(s) not clean or not live\n` : 'all live files 200 and clean\n');

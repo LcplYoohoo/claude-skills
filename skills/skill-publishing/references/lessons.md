@@ -29,6 +29,11 @@ Dates are when it bit. Each line is the reason a step exists; delete a step and 
 - **The local copy is not what people get.** The CDN copy is. The live check fetches every file by
   URL and sweeps the bytes that came back; a 404 or a cached old version shows up as a failure, not as
   "I pushed, so it's done".
+- **The raw CDN lags the push by minutes** (2026-10-22). `raw.githubusercontent.com` served the previous
+  commit's bytes for two files for over a minute after the push, and a brand-new path returned 404 for
+  the first few seconds. `verify-live` prints "live bytes differ" for exactly this; wait and re-run, do
+  not re-push. The commit itself can be proved immediately by comparing `git hash-object` of the staged
+  file with the blob SHA from the repository contents API.
 - **Verify the install location before publishing a path.** A path in a usage line that was true on
   one machine (`~/.claude/skills/<name>/scripts/x.js`) is true nowhere else; `scripts/x.js` relative
   to the skill is true everywhere the skill is.
