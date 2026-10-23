@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+; Claude Desktop (Windows): put automatic updates back (removes the policy value set by block-auto-updates.reg).
+
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Claude]
+"disableAutoUpdates"=-

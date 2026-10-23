@@ -1,6 +1,6 @@
 # claude-skills
 
-Claude Code skills I use on my own machine, cleaned up for other people. Seven so far.
+Claude Code skills I use on my own machine, cleaned up for other people. Eight so far.
 
 Each one lives in `skills/<name>/` and is a plain directory — a `SKILL.md` plus whatever
 references or scripts it needs. Nothing here installs anything, phones home, or runs at
@@ -141,6 +141,18 @@ One markdown file per real decision, with the prediction and a review date writt
 time (\`/decide\`), and a grading pass when the date comes (\`/decide-revisit\`): what we said
 would happen against what did. Pattern borrowed from seandavi/lifeos-template. The point is the
 scoreboard, not the narrative.
+
+### [`claude-desktop-windows-triage`](skills/claude-desktop-windows-triage/)
+
+For when the Claude Desktop app on Windows dies overnight, will not reopen ("another program is
+currently using this file"), restarts itself, or drops Remote Control on every Claude Code session.
+One read-only PowerShell script reads the app's own log, the AppX deployment events and the service's
+security descriptor and prints what happened and why — including the measured gap between "update
+downloaded" and "stealth update triggered", and whether the SID holding change-config rights on
+`CoworkVMService` is the service's own (on every build checked, it is not, which is why the service
+stays down until a reboot). One recovery script starts and repairs without killing anything; two
+`.reg` files turn the self-relaunch off and on via the documented policy key. Every claim is graded
+Observed / Reported / Vendor-stated in `references/evidence.md`, with the log lines quoted.
 
 ## Licence
 

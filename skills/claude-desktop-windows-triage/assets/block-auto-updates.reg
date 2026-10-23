@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+; Claude Desktop (Windows): stop the app from downloading updates and relaunching itself while idle.
+; Every self-relaunch drops Remote Control on every Claude Code session until a message is sent there.
+; This is the policy value documented at support.claude.com (article 12622667, "Enterprise configuration").
+; HKCU\SOFTWARE\Policies is a Group Policy key: the write needs the UAC prompt that double-clicking raises.
+; Updates then become manual (Microsoft Store -> Get updates). Revert with allow-auto-updates.reg.
+
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Claude]
+"disableAutoUpdates"=dword:00000001
