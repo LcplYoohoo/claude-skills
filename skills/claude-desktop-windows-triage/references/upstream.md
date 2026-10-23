@@ -25,6 +25,19 @@ Already posted there, so do not repeat it — add measurements instead:
 A separate issue (#46179) covers the service holding the package folder; #51954 and #49655 proposed the
 service as the lock holder.
 
+**#42776 was closed on 2026-10-23** by an Anthropic engineer as "completed", with "feel free to open new ones for the
+additional issues you encounter". The defects now live in separate open issues:
+
+- **#104648** — the service ACL / wrong-SID defect (recovery actions never arm; killed service stays down until reboot).
+  https://github.com/anthropics/claude-code/issues/104648 — this is the one to add `sc sdshow` / `sc showsid` output to.
+- **#100576** — Windows MSIX auto-update force-terminates the app and Remote Control; the measured download→relaunch
+  gaps (10 min / 3 h 07 / 6 h 12 vs the stated 72 h) and the 1–72 cap are posted there.
+  https://github.com/anthropics/claude-code/issues/100576
+- **#104206** — Remote Control not restored after the silent relaunch; the "first message sent" mechanism and the
+  `Skipping pause … remote control is active` line are posted there. https://github.com/anthropics/claude-code/issues/104206
+- Also open and related: #96279 (user-chosen update timing), #90870, #96942 (update deadlock), #100114, #100106,
+  #104230 / #98504 / #103872 (macOS variants of the Remote Control drop).
+
 ## The vendor documentation
 
 - **Enterprise configuration for Claude Desktop** — https://support.claude.com/en/articles/12622667.
