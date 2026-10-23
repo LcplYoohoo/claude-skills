@@ -1,6 +1,6 @@
 # claude-skills
 
-Claude Code skills I use on my own machine, cleaned up for other people. Eight so far.
+Claude Code skills I use on my own machine, cleaned up for other people. Nine so far.
 
 Each one lives in `skills/<name>/` and is a plain directory — a `SKILL.md` plus whatever
 references or scripts it needs. Nothing here installs anything, phones home, or runs at
@@ -153,6 +153,17 @@ downloaded" and "stealth update triggered", and whether the SID holding change-c
 stays down until a reboot). One recovery script starts and repairs without killing anything; two
 `.reg` files turn the self-relaunch off and on via the documented policy key. Every claim is graded
 Observed / Reported / Vendor-stated in `references/evidence.md`, with the log lines quoted.
+
+### [`skill-publishing`](skills/skill-publishing/)
+
+How the skills in this repo got here without my name, paths, projects or private notes coming with
+them. A measured decision (per-file leak counts), a staged copy, **asserted replacements that abort
+when they match nothing** (a scrub that silently did nothing looks identical to one that worked), an
+identifier sweep that includes the frontmatter `description` (the line every first pass misses),
+tests run from the staged tree, a README entry with attribution, a commit under the repo's existing
+identity, and a check of the **live raw URLs** rather than the local copy. Three zero-dependency Node
+scripts — `sweep.js`, `scrub.js`, `verify-live.js` — with a self-test, a generic patterns file you
+extend privately, and `references/lessons.md`: the incident behind every step.
 
 ## Licence
 

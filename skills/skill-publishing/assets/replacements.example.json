@@ -1,0 +1,33 @@
+{
+  "root": "./clone",
+  "replacements": [
+    { "file": "skills/example/SKILL.md",
+      "from": "Use whenever Alice asks for a report",
+      "to":   "Use whenever the user asks for a report" },
+
+    { "file": "skills/example/SKILL.md",
+      "from": "node \"C:/projects/tools/report.js\" <file>",
+      "to":   "node scripts/report.js <file>" },
+
+    { "file": "skills/example/SKILL.md",
+      "from": "See `notes/how-i-do-this.md` for the long version.\n",
+      "to":   "",
+      "expect": 1 },
+
+    { "file": "skills/example/SKILL.md",
+      "regex": "\\n## Wiring\\n[\\s\\S]*$",
+      "to": "\n",
+      "expect": 1 },
+
+    { "file": "skills/example/references/patterns.md",
+      "from": "for Alice: diff plus",
+      "to":   "for the owner: diff plus",
+      "expect": 2 },
+
+    { "file": "skills/example/report.js",
+      "rename": "skills/example/scripts/report.js" },
+
+    { "file": "skills/example/references/my-incidents.md",
+      "delete": true }
+  ]
+}
