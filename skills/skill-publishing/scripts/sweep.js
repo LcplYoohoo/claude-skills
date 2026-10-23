@@ -45,8 +45,15 @@ function walk(dir, exts, acc) {
 }
 
 function sweep(dir, patterns, exts, skip) {
+  // Skip the pattern files themselves, and any copy of them inside the tree (same bytes): a patterns
+  // file matches its own patterns by construction and is not what a reader will see as content.
   const skipSet = new Set((skip || []).map(p => path.resolve(p)));
-  const files = walk(dir, exts, []).filter(f => !skipSet.has(path.resolve(f)));
+  const skipBodies = new Set((skip || []).filter(p => fs.existsSync(p)).map(p => fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n')));
+  const files = walk(dir, exts, []).filter(f => {
+    if (skipSet.has(path.resolve(f))) return false;
+    if (skipBodies.size && path.basename(f) === 'patterns.example.txt') { try { return !skipBodies.has(fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n')); } catch { return true; } }
+    return true;
+  });
   const results = [];
   for (const f of files) {
     let text;

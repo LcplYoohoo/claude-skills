@@ -20,7 +20,7 @@ Google Drive
 iCloud Drive
 
 # --- emails and obvious secrets
-[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}
+[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\b
 \b(sk|pk|rk|ghp|gho|xox[baprs])-[A-Za-z0-9_-]{12,}
 (api[_-]?key|secret|token|password)\s*[:=]\s*['"][^'"]{8,}['"]
 \.env\b

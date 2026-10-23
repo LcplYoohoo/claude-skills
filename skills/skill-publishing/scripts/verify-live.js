@@ -38,7 +38,10 @@ async function main(argv) {
   const patterns = loadPatterns(patFiles);
   let prefix = args.includes('--prefix') ? args[args.indexOf('--prefix') + 1] : null;
   if (prefix === null) { const root = repoRoot(dir); prefix = root ? path.relative(root, path.resolve(dir)).split(path.sep).join('/') : ''; }
-  const files = walk(dir, ['md', 'txt', 'js', 'mjs', 'cjs', 'ts', 'json', 'ps1', 'sh', 'cmd', 'py', 'yml', 'yaml', 'toml', 'reg', 'html', 'svg', 'css', 'pine'], []);
+  // A copy of the generic patterns file inside the tree matches its own patterns by construction; skip it when the bytes are identical.
+  const patBodies = new Set(patFiles.filter(p => fs.existsSync(p)).map(p => fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n')));
+  const files = walk(dir, ['md', 'txt', 'js', 'mjs', 'cjs', 'ts', 'json', 'ps1', 'sh', 'cmd', 'py', 'yml', 'yaml', 'toml', 'reg', 'html', 'svg', 'css', 'pine'], [])
+    .filter(f => !(path.basename(f) === 'patterns.example.txt' && patBodies.has(fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n'))));
   let bad = 0;
   process.stdout.write(`verify-live: ${files.length} file(s) under ${base}/${prefix}\n`);
   for (const f of files) {
